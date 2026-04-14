@@ -20,24 +20,26 @@
 
 DELIMITER $$
 
-CREATE PROCEDURE temp_Version_2
-(
-)
+CREATE PROCEDURE temp_Version_2()
 BEGIN
-            IF NOT EXISTS (SELECT 1 FROM Version WHERE nVersion = 1)
-          THEN
-                  ALTER TABLE RMCObject
-                 RENAME COLUMN Orbit_Spin_tmStart TO Orbit_Spin_tmOrigin;
-      
-                 INSERT INTO Version
-                        ( nVersion, sDescription )
-                 VALUES ( 2,        'Rename tmStart to tmOrigin');
-        END IF ;
-END$$
-  
+    IF NOT EXISTS (
+        SELECT 1
+        FROM Version
+        WHERE nVersion = 2
+    ) THEN
+
+        ALTER TABLE RMCObject
+            RENAME COLUMN Orbit_Spin_tmStart TO Orbit_Spin_tmOrigin;
+
+        INSERT INTO Version (nVersion, sDescription)
+        VALUES (2, 'Rename tmStart to tmOrigin');
+
+    END IF;
+END $$
+
 DELIMITER ;
 
-CALL temp_Version_2 ();
+CALL temp_Version_2();
 
 DROP PROCEDURE temp_Version_2;
 
