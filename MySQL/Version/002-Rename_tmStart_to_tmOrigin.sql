@@ -18,23 +18,29 @@
 
 /* ************************************************************************************************************************** */
 
-DROP FUNCTION IF EXISTS Format_Orbit_Spin;
-
 DELIMITER $$
 
-CREATE FUNCTION Format_Orbit_Spin
-(
-   tmPeriod                 BIGINT,
-   tmOrigin                 BIGINT,
-   dA                       DOUBLE,
-   dB                       DOUBLE
-)
-RETURNS VARCHAR (256)
-DETERMINISTIC
+CREATE PROCEDURE temp_Version_2()
 BEGIN
-      RETURN CONCAT ('{ "tmPeriod": ', CAST(tmPeriod AS CHAR), ', "tmOrigin": ', CAST(tmOrigin AS CHAR), ', "dA": ', Format_Double(dA), ', "dB": ', Format_Double(dB), ' }');
-END$$
-  
+    IF NOT EXISTS (
+        SELECT 1
+        FROM Version
+        WHERE nVersion = 2
+    ) THEN
+
+        ALTER TABLE RMCObject
+            RENAME COLUMN Orbit_Spin_tmStart TO Orbit_Spin_tmOrigin;
+
+        INSERT INTO Version (nVersion, sDescription)
+        VALUES (2, 'Rename tmStart to tmOrigin');
+
+    END IF;
+END $$
+
 DELIMITER ;
+
+CALL temp_Version_2();
+
+DROP PROCEDURE temp_Version_2;
 
 /* ************************************************************************************************************************** */

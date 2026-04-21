@@ -18,26 +18,14 @@
 
 /******************************************************************************************************************************/
 
-DROP FUNCTION IF EXISTS dbo.Format_Orbit_Spin
-GO
-
-CREATE FUNCTION dbo.Format_Orbit_Spin
-(
-   @tmPeriod                 BIGINT,
-   @tmOrigin                 BIGINT,
-   @dA                       FLOAT (53),
-   @dB                       FLOAT (53)
-)
-RETURNS NVARCHAR (256)
-AS
-BEGIN
-      RETURN '{ ' + 
-                '"tmPeriod": ' + CAST (@tmPeriod AS NVARCHAR (32)) + ', ' +
-                '"tmOrigin": ' + CAST (@tmOrigin AS NVARCHAR (32)) + ', ' +
-                '"dA": '       + dbo.Format_Double (@dA)           + ', ' +
-                '"dB": '       + dbo.Format_Double (@dB)           +
-             ' }'
-  END
+            IF NOT EXISTS (SELECT 1 FROM dbo.Version WHERE nVersion = 2)
+         BEGIN
+                   EXEC sp_rename 'dbo.RMCObject.Orbit_Spin_tmStart', 'Orbit_Spin_tmOrigin', 'COLUMN';
+      
+                 INSERT Version
+                        ( nVersion, sDescription )
+                 VALUES ( 2,        'Rename tmStart to tmOrigin');
+           END
 GO
 
 /******************************************************************************************************************************/
