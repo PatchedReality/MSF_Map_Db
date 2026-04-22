@@ -57,7 +57,7 @@ BEGIN
 
             IF bError = 0
           THEN
-                   CALL call_RMCObject_Delete_Descendants (twRMCObjectIx, bError);
+                   CALL call_RMCObject_Delete_Descendants (twRMCObjectIx_Close, bError);
         END IF ;
 
             IF bError = 0
@@ -79,7 +79,7 @@ BEGIN
                         SBO_CLASS_RMROOT,
                         twRMRootIx,
                         SBO_CLASS_RMCOBJECT,
-                        twRMCObjectIx,
+                        twRMCObjectIx_Close,
                         SUBSCRIBE_REFRESH_EVENT_EX_FLAG_CLOSE,
                         twEventIz,
 
